@@ -1,0 +1,80 @@
+{% extends 'projetos/base.html' %}
+
+{% block title %}Meus Projetos - Área Administrativa{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1>🔒 Área Administrativa</h1>
+    <p class="lead">Bem-vindo, {{ user.username }}!</p>
+    
+    <!-- Estatísticas -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title">Total de Projetos</h5>
+                    <h2>{{ total_projetos }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">Projetos Ativos</h5>
+                    <h2>{{ projetos_ativos }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title">Em Destaque</h5>
+                    <h2>{{ projetos_destaque }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Projetos Recentes -->
+    <h3>Projetos Recentes</h3>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Categoria</th>
+                    <th>Data</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for projeto in projetos_recentes %}
+                <tr>
+                    <td>{{ projeto.titulo }}</td>
+                    <td>{{ projeto.categoria.nome }}</td>
+                    <td>{{ projeto.data_criacao|date:"d/m/Y" }}</td>
+                    <td>
+                        {% if projeto.ativo %}
+                        <span class="badge bg-success">Ativo</span>
+                        {% else %}
+                        <span class="badge bg-secondary">Inativo</span>
+                        {% endif %}
+                        {% if projeto.destaque %}
+                        <span class="badge bg-warning text-dark">⭐</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'projetos:detalhes_projeto' projeto.id %}" class="btn btn-sm btn-info">Ver</a>
+                        <a href="{% url 'admin:projetos_projeto_change' projeto.id %}" class="btn btn-sm btn-primary">Editar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <a href="{% url 'admin:projetos_projeto_add' %}" class="btn btn-success">➕ Adicionar Novo Projeto</a>
+    <a href="{% url 'admin:index' %}" class="btn btn-secondary">Ir para Admin Completo</a>
+</div>
+{% endblock %}

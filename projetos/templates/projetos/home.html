@@ -1,0 +1,83 @@
+{% extends 'projetos/base.html' %}
+
+{% block title %}Home - Portfólio{% endblock %}
+
+{% block extra_css %}
+<style>
+    .carousel-item img {
+        height: 500px;
+        object-fit: cover;
+    }
+    .carousel-caption {
+        background-color: rgba(0, 0, 0, 0.7);
+        padding: 20px;
+        border-radius: 10px;
+    }
+    .hero-section {
+        padding: 60px 0;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <h1 class="display-4">Bem-vindo ao Meu Portfólio</h1>
+        <p class="lead">Confira meus projetos em destaque</p>
+    </div>
+</section>
+
+<!-- Image Slider -->
+<div class="container mt-5">
+    {% if projetos_destaque %}
+    <div id="carouselProjetos" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            {% for projeto in projetos_destaque %}
+            <button type="button" data-bs-target="#carouselProjetos" data-bs-slide-to="{{ forloop.counter0 }}" 
+                    {% if forloop.first %}class="active"{% endif %}></button>
+            {% endfor %}
+        </div>
+        
+        <div class="carousel-inner">
+            {% for projeto in projetos_destaque %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                {% if projeto.imagem %}
+                    <img src="{{ projeto.imagem.url }}" class="d-block w-100" alt="{{ projeto.titulo }}">
+                {% else %}
+                    <img src="https://via.placeholder.com/1200x500?text={{ projeto.titulo }}" class="d-block w-100" alt="{{ projeto.titulo }}">
+                {% endif %}
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>{{ projeto.titulo }}</h5>
+                    <p>{{ projeto.descricao|truncatewords:20 }}</p>
+                    <a href="{% url 'projetos:detalhes_projeto' projeto.id %}" class="btn btn-primary">Ver Detalhes</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselProjetos" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselProjetos" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+    {% else %}
+    <div class="alert alert-info text-center">
+        <h4>Nenhum projeto em destaque no momento</h4>
+        <p>Volte em breve para ver novidades!</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Call to Action -->
+<div class="container my-5 text-center">
+    <h2>Explore Todos os Projetos</h2>
+    <p class="lead">Veja a lista completa dos meus trabalhos</p>
+    <a href="{% url 'projetos:lista_projetos' %}" class="btn btn-lg btn-primary">Ver Todos os Projetos</a>
+</div>
+{% endblock %}

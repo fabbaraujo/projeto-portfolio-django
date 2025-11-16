@@ -1,0 +1,69 @@
+{% extends 'projetos/base.html' %}
+
+{% block title %}Projetos{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="mb-4">Todos os Projetos</h1>
+    
+    <!-- Filtro por Categoria -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Filtrar por Categoria</h5>
+            <form method="get" class="row g-3">
+                <div class="col-md-8">
+                    <select name="categoria" class="form-select">
+                        <option value="">Todas as Categorias</option>
+                        {% for categoria in categorias %}
+                        <option value="{{ categoria.id }}" 
+                                {% if categoria.id|stringformat:"s" == categoria_selecionada %}selected{% endif %}>
+                            {{ categoria.nome }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+                    <a href="{% url 'projetos:lista_projetos' %}" class="btn btn-secondary w-100 mt-2">Limpar Filtro</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Lista de Projetos -->
+    <div class="row">
+        {% if projetos %}
+            {% for projeto in projetos %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    {% if projeto.imagem %}
+                        <img src="{{ projeto.imagem.url }}" class="card-img-top" alt="{{ projeto.titulo }}" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                        <img src="https://via.placeholder.com/400x200?text={{ projeto.titulo }}" class="card-img-top" alt="{{ projeto.titulo }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ projeto.titulo }}</h5>
+                        <p class="card-text">
+                            <span class="badge bg-secondary">{{ projeto.categoria.nome }}</span>
+                            {% if projeto.destaque %}
+                            <span class="badge bg-warning text-dark">⭐ Destaque</span>
+                            {% endif %}
+                        </p>
+                        <p class="card-text">{{ projeto.descricao|truncatewords:15 }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{% url 'projetos:detalhes_projeto' projeto.id %}" class="btn btn-primary btn-sm">Ver Detalhes</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-warning">
+                    Nenhum projeto encontrado com os filtros selecionados.
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
